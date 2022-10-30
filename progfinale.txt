@@ -8,14 +8,14 @@ using namespace std;
  * \return Size_t size of array
  * \exception Function throws exception invalid_argument if array has invalid size
  */
-size_t getsize();
+size_t get_size();
 
 /**
 * \brief Print array in size_t and char types
 * \param Accepts a pointer to array with pseudo-random unsigned chars
 * \param Accepts size of the array
 */
-void printarray(unsigned char* values, const size_t size);
+void print_array(unsigned char* values, const size_t size);
 
 /**
 * \brief Calculates the arithmetic average value and prints it
@@ -29,12 +29,12 @@ size_t algo(unsigned char* values, const size_t size);
 * \brief Removes array and frees memory
 * \param Accepts a pointer to array with pseudo-random chars
 */
-void removearray(unsigned char* values);
+void remove_array(unsigned char*& values);
 
 int main() {
     size_t tmp_size; //To catch invalid array size
     try {
-        tmp_size = getsize();
+        tmp_size = get_size();
     } catch (const invalid_argument& e) {
         cout << "Error: " << e.what();
         return 1;
@@ -43,16 +43,23 @@ int main() {
     const size_t size = tmp_size;
 
     unsigned char* values = new unsigned char[size];
+    const size_t lower = 0;
+    const size_t upper = 255;
+    std::random_device rd;
+    mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(lower, upper);
     for (size_t i = 0; i < size; i++) {
-        values[i] = rand();
+        values[i] = dist(gen);
     }
+    print_array(values, size);
 
     size_t result = algo(values, size);
     cout << "Result in char is" << (char)result << "\nResult in integer value is " << result << endl;
+    remove_array(values);
     return 0;
 }
 
-size_t getsize() {
+size_t get_size() {
     int size;
     cout << "Input size of array: ";
     cin >> size;
@@ -63,18 +70,19 @@ size_t getsize() {
     return static_cast<size_t>(size);
 }
 
-void printarray(unsigned char* values, const size_t size) {
+void print_array(unsigned char* values, const size_t size) {
     if (values == nullptr) throw invalid_argument("The array size must be greater than 0\n");
 
+    const auto visual = 25;
     cout << "\nYour array in char is:\n";
     for (size_t i = 0; i < size; i++) {
-        if (i % 15 == 0 && i != 0) cout << endl;    
+        if (i % visual == 0 && i != 0) cout << endl;
         cout << values[i] << " ";
     }
     cout << "\nYour array in integer value is:\n";
     for (size_t i = 0; i < size; i++) {
-        if (i % 15 == 0 && i != 0) cout << endl;
-        cout << (size_t)values[i] << " ";
+        if (i % visual == 0 && i != 0) cout << endl;
+        cout << static_cast<size_t>(values[i]) << " ";
     }
     return;
 }
@@ -91,7 +99,7 @@ size_t algo(unsigned char* values, const size_t size) {
     return res / size;
 }
 
-void removearray(unsigned char*& values) {
+void remove_array(unsigned char*& values) {
     if (values == nullptr) cout << "The array already removed\n";
     else {
         delete[] values;
