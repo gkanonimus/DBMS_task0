@@ -84,7 +84,6 @@ void print_array(unsigned char* values, const size_t size) {
         if (i % visual == 0 && i != 0) cout << endl;
         cout << static_cast<size_t>(values[i]) << " ";
     }
-    return;
 }
 
 size_t algo(unsigned char* values, const size_t size) {
@@ -100,10 +99,6 @@ size_t algo(unsigned char* values, const size_t size) {
 }
 
 void remove_array(unsigned char*& values) {
-    if (values == nullptr) cout << "The array already removed\n";
-    else {
-        delete[] values;
-        values = nullptr;
-    }
-    return;
+    delete[] values;
+    values = nullptr;
 }
